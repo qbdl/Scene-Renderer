@@ -12,24 +12,24 @@
 #include"component/GameObject.h"
 #include"component/transform.h"
 #include"component/Lights.h"
-#include"./component/Model.h"
+#include"component/Model.h"
 //object
 #include"object/SkyBox.h"
 #include"object/Terrain.h"
 //renderer
 #include"renderer/Material.h"
 #include"renderer/ResourceManager.h"
-#include"./renderer/Mesh_Filter.h"
+#include"renderer/Mesh_Filter.h"
 #include"renderer/Mesh_Renderer.h"
-#include"./renderer/RenderScene.h"
+#include"renderer/RenderScene.h"
 //system
 #include"system/InputManager.h"
-#include"./system/meta_register.h"
-#include"./system/RenderManager.h"
+#include"system/meta_register.h"
+#include"system/RenderManager.h"
 #include"GUI.h"
-#include"./system/global_context.h"
-#include"./component/Atmosphere.h"
-#include"./system/ModelLoader.h"
+#include"system/global_context.h"
+#include"component/Atmosphere.h"
+#include"system/ModelLoader.h"
 //json
 #include<json/json.hpp>
 using json = nlohmann::json;
@@ -47,10 +47,9 @@ extern std::unique_ptr<RenderManager> renderManager;
 extern std::unique_ptr<ResourceManager> resourceManager;
 extern std::unique_ptr<InputManager> inputManager;
 extern std::shared_ptr<ModelLoader> modelLoader;
-
+std::shared_ptr<RenderScene> scene;
 //#define TEST
 //#ifndef TEST
-void loadModel(std::shared_ptr<RenderScene> scene);
 void render() {
 	glfwInit();
 	GLFWwindow* window; 
@@ -74,7 +73,7 @@ void render() {
 		modelLoader = std::make_shared<ModelLoader>();
 		//renderScene = std::make_shared<RenderScene>();
 	}
-	std::shared_ptr<RenderScene> scene = std::make_shared<RenderScene>();
+	scene = std::make_shared<RenderScene>();
 	// Camera
 	{
 		std::shared_ptr<Camera> camera = std::make_shared<Camera>();
@@ -83,7 +82,7 @@ void render() {
 	//gui
 	Gui gui(window);
 
-	modelLoader->loadSceneAsync(scene, "./asset/objects/scene.json");
+	modelLoader->loadSceneAsync(scene, "./asset/objects/scene2.json");
 			
 	while (!glfwWindowShouldClose(window)) {
 		gui.window(scene);
@@ -91,7 +90,7 @@ void render() {
 		//input manager tick
 		inputManager->tick();
 		
-		glCheckError();
+		
 		// camera tick
 		if (scene->main_camera) {
 			scene->main_camera->tick();

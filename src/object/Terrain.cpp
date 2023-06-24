@@ -1,10 +1,11 @@
-#include"Terrain.h"
-#include"../renderer/Material.h"
-#include"../component/TerrainComponent.h"
-#include"../buffer/SSBO.h"
-#include"../buffer/ImageTexture.h"
-#include"../utils/Shader.h"
-#include"../component/Grass.h"
+#include"object/Terrain.h"
+#include"renderer/Material.h"
+#include"component/TerrainComponent.h"
+#include"buffer/SSBO.h"
+#include"buffer/ImageTexture.h"
+#include"utils/Shader.h"
+#include"component/Grass.h"
+#include"component/Ocean.h"
 #include<assert.h>
 
 Terrain::Terrain() {
@@ -21,8 +22,8 @@ Terrain::~Terrain() {
 /// <param name="shader"></param>
 void Terrain::render(const std::shared_ptr<Shader>& shader) {
 	assert(shader == nullptr);
-	auto& terrainComponent = std::static_pointer_cast<TerrainComponent>(GetComponent("TerrainComponent"));
-	auto& grassComponent = std::static_pointer_cast<Grass>(GetComponent("Grass"));
+	auto&& terrainComponent = std::static_pointer_cast<TerrainComponent>(GetComponent("TerrainComponent"));
+	auto&& grassComponent = std::static_pointer_cast<Grass>(GetComponent("Grass"));
 	if (terrainComponent && terrainComponent->initDone) {
 		terrainComponent->render(terrainComponent->terrainGBuffer);
 	}
@@ -35,8 +36,8 @@ void Terrain::render(const std::shared_ptr<Shader>& shader) {
 void Terrain::constructCall() {
 	// step1: terrainComponent:get terrain surface
 	// step2: grassComponent: get grass data
-	auto& terrainComponent = std::static_pointer_cast<TerrainComponent>(GetComponent("TerrainComponent"));
-	auto& grassComponent = std::static_pointer_cast<Grass>(GetComponent("Grass"));
+	auto&& terrainComponent = std::static_pointer_cast<TerrainComponent>(GetComponent("TerrainComponent"));
+	auto&& grassComponent = std::static_pointer_cast<Grass>(GetComponent("Grass"));
 	if (terrainComponent) {
 		terrainComponent->prepareData();
 		if (grassComponent) {
@@ -55,8 +56,12 @@ void Terrain::loadFromJson(json& data) {
 	auto terrainComponent = std::make_shared<TerrainComponent>();
 	terrainComponent->loadFromJson(data);
 	addComponent(terrainComponent);
-	if (data.find("grass")!=data.end()) {
+	if (data.find("grass")!=data.end() && data["grass"] == "true") {
 		auto grassComponent = std::make_shared<Grass>();
 		addComponent(grassComponent);
+	}
+	if (data.find("ocean") != data.end() && data["ocean"] == "true") {
+		auto oceanComponent = std::make_shared<Ocean>();
+		addComponent(oceanComponent);
 	}
 }

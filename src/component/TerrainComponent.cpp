@@ -3,17 +3,17 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 #include<fstream>
-#include"TerrainComponent.h"
-#include"../utils/Utils.h"
-#include"../renderer/Texture.h"
-#include"../system/RenderManager.h"
-#include"../renderer/ResourceManager.h"
-#include"../renderer/Material.h"
-#include"../utils/Shader.h"
-#include"../buffer/SSBO.h"
-#include"../buffer/ImageTexture.h"
-#include"Grass.h"
-#include"GameObject.h"
+#include"component/TerrainComponent.h"
+#include"utils/Utils.h"
+#include"renderer/Texture.h"
+#include"system/RenderManager.h"
+#include"renderer/ResourceManager.h"
+#include"renderer/Material.h"
+#include"utils/Shader.h"
+#include"buffer/SSBO.h"
+#include"buffer/ImageTexture.h"
+#include"component/Grass.h"
+#include"component/GameObject.h"
 
 extern std::unique_ptr<ResourceManager> resourceManager;
 extern std::unique_ptr<RenderManager> renderManager;
@@ -134,9 +134,9 @@ std::shared_ptr<TerrainComponent> TerrainComponent::loadHeightmap(const std::str
 	//terrainMaterial->addTexture(Texture::loadFromFile(path+"normalMap.png"),"normalMap");
 	//resourceManager.getResource();
 	// indices
-	yScale = 50.0f;
-	yShift = -10.0f; 
-	float xzScale = 100.0f;
+	yScale = 70.0f;
+	yShift = -20.0f; 
+	float xzScale = 200.0f;
 	//float xzScale = 1.0f;
 	model = glm::mat4(1);
 	model = glm::translate(model, glm::vec3(0.0f, yShift,0.0f));
@@ -163,7 +163,7 @@ void TerrainComponent::initVertexObject() {
 	if (!VAO) {
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
-		glCheckError();
+		
 	}
 }
 
@@ -301,7 +301,7 @@ void TerrainComponent::init(){
 	terrainGBuffer = std::make_shared<Shader>("./src/shader/terrain/terrain.vs", "./src/shader/deferred/gBuffer.fs");
 	terrainGBuffer->requireMat = true;
 
-	glCheckError();
+	
 	//isIn = true;
 }
 
@@ -472,7 +472,7 @@ void TerrainComponent::compGeneratePatchCall() {
 	lodMapTexture->setBinding(5);
 	indirectDrawSSBO->setBinding(5);
 	// grass patches binding
-	auto& grassComponent = std::static_pointer_cast<Grass>(this->gameObject->GetComponent("Grass"));
+	auto&& grassComponent = std::static_pointer_cast<Grass>(this->gameObject->GetComponent("Grass"));
 	if (grassComponent) {
 		grassComponent->grassPatchesBuffer->setBinding(1);
 	}
@@ -549,7 +549,7 @@ void TerrainComponent::renderCall(const std::shared_ptr<Shader>& outShader) {
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawSSBO->ssbo);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
 
-	glCheckError();
+	
 
 	glCullFace(GL_BACK);
 	//glEnable(GL_CULL_FACE);

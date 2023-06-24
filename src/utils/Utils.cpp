@@ -1,7 +1,7 @@
 #include<glad/glad.h>
 #include<glfw/glfw3.h>
-#include"Utils.h"
-#include"../system/InputManager.h"
+#include"utils/Utils.h"
+#include"system/InputManager.h"
 #include<memory>
 
 extern std::unique_ptr<InputManager> inputManager;
@@ -327,7 +327,10 @@ void renderQuad()
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     }
+    
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
     glBindVertexArray(0);
+    
 }

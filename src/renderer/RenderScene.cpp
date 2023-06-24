@@ -1,8 +1,8 @@
-#include"RenderScene.h"
-#include"../object/Terrain.h"
-#include"../component/GameObject.h"
-#include"../object/SkyBox.h"
-#include"../component/Lights.h"
+#include"renderer/RenderScene.h"
+#include"object/Terrain.h"
+#include"component/GameObject.h"
+#include"object/SkyBox.h"
+#include"component/Lights.h"
 
 using std::shared_ptr;
 
@@ -18,21 +18,21 @@ std::shared_ptr<RenderScene> RenderScene::addObject(std::shared_ptr<GameObject> 
 	objects.emplace_back(object);
 	mtx.unlock();
 
-	auto& Plight= object->GetComponent("PointLight");
+	auto&& Plight= object->GetComponent("PointLight");
 	if (Plight) {
 		std::shared_ptr<PointLight> light = std::static_pointer_cast<PointLight> (Plight);
 		lightMtx.lock();
 		this->pointLights.emplace_back(light);
 		lightMtx.unlock();
 	}
-	auto& Dlight = object->GetComponent("DirectionLight");
+	auto&& Dlight = object->GetComponent("DirectionLight");
 	if (Dlight) {
 		std::shared_ptr<DirectionLight> light = std::static_pointer_cast<DirectionLight> (Dlight);
 		lightMtx.lock();
 		this->directionLights.emplace_back(light);
 		lightMtx.unlock();
 	}
-	auto& Slight = object->GetComponent("SpotLight");
+	auto&& Slight = object->GetComponent("SpotLight");
 	if (Slight) {
 		std::shared_ptr<SpotLight> light = std::static_pointer_cast<SpotLight> (Slight);
 		lightMtx.lock();
@@ -48,6 +48,7 @@ std::shared_ptr<RenderScene> RenderScene::addTerrain(std::shared_ptr<Terrain>ter
 	// 
 	return shared_from_this();
 }
+
 std::shared_ptr<RenderScene> RenderScene::addSky(std::shared_ptr<Sky>sky) {
 	//
 	this->sky = sky;
